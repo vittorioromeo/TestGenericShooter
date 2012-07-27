@@ -9,12 +9,12 @@ namespace TestGenericShooter
     public class GSGame : Game
     {
         private readonly Manager _manager;
-        private readonly PhysicsWorld _physicsWorld;
+        private readonly PhysicsWorld _physicsWorld;        
 
         public GSGame()
         {
             _manager = new Manager();
-            _physicsWorld = new PhysicsWorld(50, 50, 8000);
+            _physicsWorld = new PhysicsWorld(200, 200, 2000, 50, 50);
             Factory = new Factory(this, _manager, _physicsWorld);
 
             OnUpdate += _manager.Update;
@@ -34,12 +34,12 @@ namespace TestGenericShooter
 
         private void InitializeInputs()
         {
-            DefineInput("w", 0, () => NextY = -1, null, new InputCombination(Keyboard.Key.W));
-            DefineInput("s", 0, () => NextY = 1, null, new InputCombination(Keyboard.Key.S));
-            DefineInput("a", 0, () => NextX = -1, null, new InputCombination(Keyboard.Key.A));
-            DefineInput("d", 0, () => NextX = 1, null, new InputCombination(Keyboard.Key.D));
+            Bind("w", 0, () => NextY = -1, null, new KeyCombination(Keyboard.Key.W));
+            Bind("s", 0, () => NextY = 1, null, new KeyCombination(Keyboard.Key.S));
+            Bind("a", 0, () => NextX = -1, null, new KeyCombination(Keyboard.Key.A));
+            Bind("d", 0, () => NextX = 1, null, new KeyCombination(Keyboard.Key.D));
 
-            DefineInput("fire", 0, () => NextAction = 1, null, new InputCombination(Mouse.Button.Left));
+            Bind("fire", 0, () => NextAction = 1, null, new KeyCombination(Mouse.Button.Left));
         }
         private void NewGame()
         {
@@ -57,12 +57,12 @@ namespace TestGenericShooter
                           "10000100000000000001",
                           "10000000000000000001",
                           "10000000111100000001",
-                          "10000000111100000001",
+                          "10000000003000000001",
                           "10000000111100000001",
                           "10000000000000000001",
-                          "10000000000000100001",
-                          "10000000000000100001",
-                          "10000000000000100001",
+                          "10000000000000133331",
+                          "10000000000000133331",
+                          "10000000000000100401",
                           "10000000000000100001",
                           "11111111111111111111"
                       };
@@ -77,7 +77,10 @@ namespace TestGenericShooter
                     if (map[iY].Substring(iX, 1) == "1")
                         Factory.Wall(ToCoords(8) + ToCoords(16)*iX, ToCoords(8) + ToCoords(16)*iY, ToCoords(16), ToCoords(16));
 
-                    if (map[iY].Substring(iX, 1) == "0")
+                    if (map[iY].Substring(iX, 1) == "3")
+                        Factory.BreakableWall(ToCoords(8) + ToCoords(16) * iX, ToCoords(8) + ToCoords(16) * iY, ToCoords(16), ToCoords(16));
+
+                    if (map[iY].Substring(iX, 1) == "4")
                         Factory.Enemy(ToCoords(8) + ToCoords(16)*iX, ToCoords(8) + ToCoords(16)*iY);
                 }
         }

@@ -10,7 +10,6 @@ namespace TestGenericShooter.Components
         private readonly PhysicsWorld _physicsWorld;
         private readonly CPosition _cPosition;
         private readonly bool _isStatic;
-        private GSVector2 _halfSize;
         private readonly HashSet<string> _groups;
         private readonly HashSet<string> _groupsToCheck;
         private readonly HashSet<string> _groupsToIgnoreResolve;
@@ -20,7 +19,7 @@ namespace TestGenericShooter.Components
             _physicsWorld = mPhysicsWorld;
             _cPosition = mCPosition;
             _isStatic = mIsStatic;
-            _halfSize = new GSVector2(mWidth / 2, mHeight / 2);
+            HalfSize = new GSVector2(mWidth / 2, mHeight / 2);
 
             _groups = new HashSet<string>();
             _groupsToCheck = new HashSet<string>();
@@ -32,17 +31,18 @@ namespace TestGenericShooter.Components
         public GSVector2 Velocity { get; set; }
         public HashSet<Cell> Cells { get; set; }
         public Action<Entity, CBody> OnCollision { get; set; }
+        public GSVector2 HalfSize { get; set; }
 
         #region Shortcut Properties
         public GSVector2 Position { get { return _cPosition.Position; } set { _cPosition.Position = value; } }
-        public int Left { get { return Position.X - _halfSize.X; } }
-        public int Right { get { return Position.X + _halfSize.X; } }
-        public int Top { get { return Position.Y - _halfSize.Y; } }
-        public int Bottom { get { return Position.Y + _halfSize.Y; } }
-        public int HalfWidth { get { return _halfSize.X; } }
-        public int HalfHeight { get { return _halfSize.Y; } }
-        public int Width { get { return _halfSize.X*2; } }
-        public int Height { get { return _halfSize.Y*2; } }
+        public int Left { get { return Position.X - HalfSize.X; } }
+        public int Right { get { return Position.X + HalfSize.X; } }
+        public int Top { get { return Position.Y - HalfSize.Y; } }
+        public int Bottom { get { return Position.Y + HalfSize.Y; } }
+        public int HalfWidth { get { return HalfSize.X; } }
+        public int HalfHeight { get { return HalfSize.Y; } }
+        public int Width { get { return HalfSize.X*2; } }
+        public int Height { get { return HalfSize.Y*2; } }
         #endregion
 
         public void SetCells(HashSet<Cell> mCells) { Cells = mCells; }
@@ -86,6 +86,11 @@ namespace TestGenericShooter.Components
 
                 if (!IsOverlapping(body)) continue;
 
+                if (OnCollision != null) OnCollision(body.Entity, body);
+                if (body.OnCollision != null) body.OnCollision(Entity, this);
+
+                if (_groupsToIgnoreResolve.Any(groupToIgnoreResolve => body.HasGroup(groupToIgnoreResolve))) continue;
+
                 int encrX = 0, encrY = 0, numPxOverlapX, numPxOverlapY;
 
                 if (Bottom < body.Bottom && Bottom >= body.Top) encrY = body.Top - Bottom;
@@ -94,16 +99,8 @@ namespace TestGenericShooter.Components
                 if (Left < body.Left && Right >= body.Left) encrX = body.Left - Right;
                 else if (Right > body.Right && Left <= body.Right) encrX = body.Right - Left;
 
-                if (Left < body.Left) numPxOverlapX = Right - body.Left;
-                else numPxOverlapX = body.Right - Left;
-
-                if (Top < body.Top) numPxOverlapY = Bottom - body.Top;
-                else numPxOverlapY = body.Bottom - Top;
-
-                if (OnCollision != null) OnCollision(body.Entity, body);
-                if (body.OnCollision != null) body.OnCollision(Entity, this);
-
-                if (_groupsToIgnoreResolve.Any(groupToIgnoreResolve => body.HasGroup(groupToIgnoreResolve))) continue;
+                if (Left < body.Left) numPxOverlapX = Right - body.Left; else numPxOverlapX = body.Right - Left;
+                if (Top < body.Top) numPxOverlapY = Bottom - body.Top; else numPxOverlapY = body.Bottom - Top;           
 
                 if (numPxOverlapX > numPxOverlapY) Position += new GSVector2(0, encrY);
                 else Position += new GSVector2(encrX, 0);

@@ -1,4 +1,5 @@
 ﻿using SFMLStart;
+using SFMLStart.Data;
 
 namespace TestGenericShooter
 {
@@ -6,8 +7,8 @@ namespace TestGenericShooter
     {
         private static void Main(string[] args)
         {
-            //Settings.Framerate.IsLimited = true;
-            //Settings.Framerate.Limit = 60;
+            Settings.Framerate.IsLimited = false;
+            Settings.Framerate.Limit = 60;
 
             var game = new GSGame();
             var window = new GameWindow(320, 240, 3);
