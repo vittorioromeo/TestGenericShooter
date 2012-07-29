@@ -47,10 +47,14 @@ namespace TestGenericShooter
         public void AddBody(CBody mBody)
         {
             var cells = CalculateCells(mBody);
-            mBody.SetCells(cells);
+            mBody.Cells = cells;
             foreach (var cell in cells) cell.AddBody(mBody);
         }
-        public void RemoveBody(CBody mBody) { foreach (var cell in mBody.Cells) cell.RemoveBody(mBody); }
+        public void RemoveBody(CBody mBody)
+        {
+            foreach (var cell in mBody.Cells) 
+                cell.RemoveBody(mBody);
+        }
         public void UpdateBody(CBody mBody)
         {
             RemoveBody(mBody);
@@ -68,9 +72,10 @@ namespace TestGenericShooter
         public List<CBody> GetBodies(CBody mBody)
         {
             var result = new List<CBody>();
+            var cells = mBody.Cells;
 
-            foreach (var group in mBody.GetGroupsToCheck())
-                foreach (var cell in CalculateCells(mBody))
+            foreach (var cell in cells)
+                foreach (var group in mBody.GetGroupsToCheck())
                     foreach(var body in cell.GetBodies(group)) 
                         result.Add(body);
 
@@ -100,6 +105,9 @@ namespace TestGenericShooter
                 if (_groupedBodies.ContainsKey(group))
                     _groupedBodies[group].Remove(mBody);
         }
-        public IEnumerable<CBody> GetBodies(string mGroup) { return !_groupedBodies.ContainsKey(mGroup) ? new HashSet<CBody>() : _groupedBodies[mGroup]; }
+        public IEnumerable<CBody> GetBodies(string mGroup)
+        {
+            return !_groupedBodies.ContainsKey(mGroup) ? new HashSet<CBody>() : _groupedBodies[mGroup];
+        }
     }
 }

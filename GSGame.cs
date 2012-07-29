@@ -14,7 +14,7 @@ namespace TestGenericShooter
         public GSGame()
         {
             _manager = new Manager();
-            _physicsWorld = new PhysicsWorld(200, 200, 2000, 50, 50);
+            _physicsWorld = new PhysicsWorld(200, 200, 3000, 50, 50);
             Factory = new Factory(this, _manager, _physicsWorld);
 
             OnUpdate += _manager.Update;
@@ -80,7 +80,7 @@ namespace TestGenericShooter
                     if (map[iY].Substring(iX, 1) == "3")
                         Factory.BreakableWall(ToCoords(8) + ToCoords(16) * iX, ToCoords(8) + ToCoords(16) * iY, ToCoords(16), ToCoords(16));
 
-                    if (map[iY].Substring(iX, 1) == "4")
+                    if (map[iY].Substring(iX, 1) == "0")
                         Factory.Enemy(ToCoords(8) + ToCoords(16)*iX, ToCoords(8) + ToCoords(16)*iY);
                 }
         }

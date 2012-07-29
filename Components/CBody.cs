@@ -45,8 +45,6 @@ namespace TestGenericShooter.Components
         public int Height { get { return HalfSize.Y*2; } }
         #endregion
 
-        public void SetCells(HashSet<Cell> mCells) { Cells = mCells; }
-
         public void AddGroups(params string[] mGroups) { foreach (var group in mGroups) AddGroup(group); }
         public void AddGroupsToCheck(params string[] mGroups) { foreach (var group in mGroups)AddGroupToCheck(group); }
         public void AddGroupsToIgnoreResolve(params string[] mGroups) { foreach (var group in mGroups)AddGroupToIgnoreResolve(group); }     

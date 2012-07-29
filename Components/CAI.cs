@@ -49,16 +49,16 @@ namespace TestGenericShooter.Components
 
             if (_shootDelay > 30)
             {
-                _timeline = new Timeline();
-                _timeline.AddCommand(new Do(() =>
-                                                    {
-                                                        _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle, 800);
-                                                        _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + 15, 800);
-                                                        _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle - 15, 800);
-                                                    }));
-                _timeline.AddCommand(new Wait(2));
-                _timeline.AddCommand(new Goto(0, 2));
-                _timeline.AddCommand(new Wait(0));
+               // _timeline = new Timeline();
+               // _timeline.AddCommand(new Do(() =>
+               //                                     {
+               //                                       _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + 15, 800);
+               //                                       _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle , 200);
+               //                                       _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle - 15, 800);
+               //                                     }));
+               // _timeline.AddCommand(new Wait(2));
+               // _timeline.AddCommand(new Goto(0, 2));
+               // _timeline.AddCommand(new Wait(0));
 
                 _shootDelay = 0;            
             }
@@ -71,7 +71,7 @@ namespace TestGenericShooter.Components
 
             _angle = Utils.Math.Angles.RotateTowardsAngleDegrees(_angle, targetAngle, _rotationSpeed);
 
-            _cMovement.MoveTowardsAngle(_angle, (int) _speed);
+            _cMovement.MoveTowardsAngle(_angle, (int)_speed);
             if(_timeline != null) _timeline.Update(mFrameTime);
         }
     }
