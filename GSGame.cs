@@ -9,7 +9,7 @@ namespace TestGenericShooter
     public class GSGame : Game
     {
         private readonly Manager _manager;
-        private readonly PhysicsWorld _physicsWorld;        
+        private readonly PhysicsWorld _physicsWorld;
 
         public GSGame()
         {
@@ -72,13 +72,13 @@ namespace TestGenericShooter
                 for (var iX = 0; iX < sizeX; iX++)
                 {
                     if (map[iY].Substring(iX, 1) == "2")
-                        Factory.Player(ToCoords(8) + ToCoords(16) * iX, ToCoords(8) + ToCoords(16) * iY);
+                        Factory.Player(ToCoords(8) + ToCoords(16)*iX, ToCoords(8) + ToCoords(16)*iY);
 
                     if (map[iY].Substring(iX, 1) == "1")
                         Factory.Wall(ToCoords(8) + ToCoords(16)*iX, ToCoords(8) + ToCoords(16)*iY, ToCoords(16), ToCoords(16));
 
                     if (map[iY].Substring(iX, 1) == "3")
-                        Factory.BreakableWall(ToCoords(8) + ToCoords(16) * iX, ToCoords(8) + ToCoords(16) * iY, ToCoords(16), ToCoords(16));
+                        Factory.BreakableWall(ToCoords(8) + ToCoords(16)*iX, ToCoords(8) + ToCoords(16)*iY, ToCoords(16), ToCoords(16));
 
                     if (map[iY].Substring(iX, 1) == "0")
                         Factory.Enemy(ToCoords(8) + ToCoords(16)*iX, ToCoords(8) + ToCoords(16)*iY);

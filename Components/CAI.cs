@@ -15,7 +15,7 @@ namespace TestGenericShooter.Components
         private float _rotationSpeed;
         private float _shootDelay;
         private float _speed;
-        private Timeline _timeline; 
+        private Timeline _timeline;
 
         public CAI(GSGame mGame, CBody mCBody, CMovement mCMovement, CTargeter mCTargeter)
         {
@@ -47,20 +47,20 @@ namespace TestGenericShooter.Components
             _shootDelay += mFrameTime;
             //_replicationDelay += mFrameTime;
 
-            if (_shootDelay > 30)
+            if (_shootDelay > 60)
             {
-               // _timeline = new Timeline();
-               // _timeline.AddCommand(new Do(() =>
-               //                                     {
-               //                                       _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + 15, 800);
-               //                                       _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle , 200);
-               //                                       _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle - 15, 800);
-               //                                     }));
-               // _timeline.AddCommand(new Wait(2));
-               // _timeline.AddCommand(new Goto(0, 2));
-               // _timeline.AddCommand(new Wait(0));
+                _timeline = new Timeline();
+                 _timeline.AddCommand(new Do(() =>
+                                                     {
+                                                       //_game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + 15, 800);
+                                                       _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle , 800);
+                                                      // _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle - 15, 800);
+                                                     }));
+               //  _timeline.AddCommand(new Wait(2));
+               //  _timeline.AddCommand(new Goto(0, 1));
+               //  _timeline.AddCommand(new Wait(0));
 
-                _shootDelay = 0;            
+                _shootDelay = 0;
             }
 
             if (_replicationDelay > 50)
@@ -71,8 +71,8 @@ namespace TestGenericShooter.Components
 
             _angle = Utils.Math.Angles.RotateTowardsAngleDegrees(_angle, targetAngle, _rotationSpeed);
 
-            _cMovement.MoveTowardsAngle(_angle, (int)_speed);
-            if(_timeline != null) _timeline.Update(mFrameTime);
+            _cMovement.MoveTowardsAngle(_angle, (int) _speed);
+            if (_timeline != null) _timeline.Update(mFrameTime);
         }
     }
 }

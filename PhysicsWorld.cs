@@ -8,10 +8,9 @@ namespace TestGenericShooter
         private readonly int _cellSize;
         private readonly Cell[,] _cells;
         private readonly int _columns;
-        private readonly int _rows;
-        private readonly int _offsetX;
-        private readonly int _offsetY;
+        private readonly int _offsetX, _offsetY;
         private readonly int _range;
+        private readonly int _rows;
 
         public PhysicsWorld(int mColumns, int mRows, int mCellSize, int mOffsetX = 0, int mOffsetY = 0, int mRange = 0)
         {
@@ -25,20 +24,20 @@ namespace TestGenericShooter
 
             for (var iX = 0; iX < mColumns; iX++)
                 for (var iY = 0; iY < mRows; iY++)
-                    _cells[iX, iY] = new Cell();        
+                    _cells[iX, iY] = new Cell();
         }
 
         private HashSet<Cell> CalculateCells(CBody mBody)
         {
             var result = new HashSet<Cell>();
 
-            var startX = mBody.Left / _cellSize;
-            var endX = mBody.Right / _cellSize;
-            var startY = mBody.Top / _cellSize;
-            var endY = mBody.Bottom / _cellSize;
+            var startX = mBody.Left/_cellSize - _range + _offsetX;
+            var endX = mBody.Right/_cellSize + _range + _offsetX;
+            var startY = mBody.Top/_cellSize - _range + _offsetY;
+            var endY = mBody.Bottom/_cellSize + _range + _offsetY;
 
-            for (var iY = startY - _range + _offsetY; iY <= endY + _range + _offsetY; iY++)
-                for (var iX = startX - _range + _offsetX; iX <= endX + _range + _offsetX; iX++)
+            for (var iY = startY; iY <= endY; iY++)
+                for (var iX = startX; iX <= endX; iX++)
                     result.Add(_cells[iX, iY]);
 
             return result;
@@ -50,9 +49,9 @@ namespace TestGenericShooter
             mBody.Cells = cells;
             foreach (var cell in cells) cell.AddBody(mBody);
         }
-        public void RemoveBody(CBody mBody)
+        public static void RemoveBody(CBody mBody)
         {
-            foreach (var cell in mBody.Cells) 
+            foreach (var cell in mBody.Cells)
                 cell.RemoveBody(mBody);
         }
         public void UpdateBody(CBody mBody)
@@ -63,23 +62,18 @@ namespace TestGenericShooter
 
         public bool IsOutOfBounds(CBody mBody)
         {
-            return mBody.Left < 0 - _offsetX * _cellSize
-            || mBody.Right > _columns * _cellSize + _offsetX * _cellSize
-            || mBody.Top < 0 - _offsetY * _cellSize
-            || mBody.Bottom > _rows * _cellSize + _offsetY * _cellSize;
+            return mBody.Left < 0 - _offsetX*_cellSize
+                   || mBody.Right > _columns*_cellSize + _offsetX*_cellSize
+                   || mBody.Top < 0 - _offsetY*_cellSize
+                   || mBody.Bottom > _rows*_cellSize + _offsetY*_cellSize;
         }
 
-        public List<CBody> GetBodies(CBody mBody)
+        public static IEnumerable<CBody> GetBodies(CBody mBody)
         {
-            var result = new List<CBody>();
-            var cells = mBody.Cells;
-
-            foreach (var cell in cells)
+            foreach (var cell in mBody.Cells)
                 foreach (var group in mBody.GetGroupsToCheck())
-                    foreach(var body in cell.GetBodies(group)) 
-                        result.Add(body);
-
-            return result;
+                    foreach (var body in cell.GetBodies(group))
+                        yield return body;
         }
     }
 
@@ -87,7 +81,7 @@ namespace TestGenericShooter
     {
         private readonly Dictionary<string, HashSet<CBody>> _groupedBodies;
 
-        public Cell() { _groupedBodies = new Dictionary<string, HashSet<CBody>>();}
+        public Cell() { _groupedBodies = new Dictionary<string, HashSet<CBody>>(); }
 
         public void AddBody(CBody mBody)
         {
@@ -105,9 +99,6 @@ namespace TestGenericShooter
                 if (_groupedBodies.ContainsKey(group))
                     _groupedBodies[group].Remove(mBody);
         }
-        public IEnumerable<CBody> GetBodies(string mGroup)
-        {
-            return !_groupedBodies.ContainsKey(mGroup) ? new HashSet<CBody>() : _groupedBodies[mGroup];
-        }
+        public IEnumerable<CBody> GetBodies(string mGroup) { return !_groupedBodies.ContainsKey(mGroup) ? new HashSet<CBody>() : _groupedBodies[mGroup]; }
     }
 }

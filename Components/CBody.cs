@@ -7,25 +7,25 @@ namespace TestGenericShooter.Components
 {
     public class CBody : Component
     {
-        private readonly PhysicsWorld _physicsWorld;
         private readonly CPosition _cPosition;
-        private readonly bool _isStatic;
         private readonly HashSet<string> _groups;
         private readonly HashSet<string> _groupsToCheck;
         private readonly HashSet<string> _groupsToIgnoreResolve;
+        private readonly bool _isStatic;
+        private readonly PhysicsWorld _physicsWorld;
 
         public CBody(PhysicsWorld mPhysicsWorld, CPosition mCPosition, bool mIsStatic, int mWidth, int mHeight)
         {
             _physicsWorld = mPhysicsWorld;
             _cPosition = mCPosition;
             _isStatic = mIsStatic;
-            HalfSize = new GSVector2(mWidth / 2, mHeight / 2);
+            HalfSize = new GSVector2(mWidth/2, mHeight/2);
 
             _groups = new HashSet<string>();
             _groupsToCheck = new HashSet<string>();
             _groupsToIgnoreResolve = new HashSet<string>();
 
-            Cells = new HashSet<Cell>();           
+            Cells = new HashSet<Cell>();
         }
 
         public GSVector2 Velocity { get; set; }
@@ -46,8 +46,8 @@ namespace TestGenericShooter.Components
         #endregion
 
         public void AddGroups(params string[] mGroups) { foreach (var group in mGroups) AddGroup(group); }
-        public void AddGroupsToCheck(params string[] mGroups) { foreach (var group in mGroups)AddGroupToCheck(group); }
-        public void AddGroupsToIgnoreResolve(params string[] mGroups) { foreach (var group in mGroups)AddGroupToIgnoreResolve(group); }     
+        public void AddGroupsToCheck(params string[] mGroups) { foreach (var group in mGroups) AddGroupToCheck(group); }
+        public void AddGroupsToIgnoreResolve(params string[] mGroups) { foreach (var group in mGroups) AddGroupToIgnoreResolve(group); }
         public IEnumerable<string> GetGroups() { return _groups; }
         public IEnumerable<string> GetGroupsToCheck() { return _groupsToCheck; }
 
@@ -56,9 +56,9 @@ namespace TestGenericShooter.Components
         private void AddGroupToIgnoreResolve(string mGroup) { _groupsToIgnoreResolve.Add(mGroup); }
         private bool HasGroup(string mGroup) { return _groups.Contains(mGroup); }
         private bool IsOverlapping(CBody mBody) { return Right > mBody.Left && Left < mBody.Right && (Bottom > mBody.Top && Top < mBody.Bottom); }
-      
+
         public override void Added() { _physicsWorld.AddBody(this); }
-        public override void Removed() { _physicsWorld.RemoveBody(this); }
+        public override void Removed() { PhysicsWorld.RemoveBody(this); }
         public override void Update(float mFrameTime)
         {
             if (_isStatic) return;
@@ -72,10 +72,7 @@ namespace TestGenericShooter.Components
             }
 
             var checkedBodies = new HashSet<CBody> {this};
-            var bodiesToCheck = _physicsWorld.GetBodies(this);
-
-            if (Velocity.X < 0) bodiesToCheck.Sort((b, a) => a.Position.X.CompareTo(b.Position.X));
-            else bodiesToCheck.Sort((a, b) => a.Position.X.CompareTo(b.Position.X));
+            var bodiesToCheck = PhysicsWorld.GetBodies(this).OrderBy(body => Velocity.X > 0 ? body.Position.X : -body.Position.X);
 
             foreach (var body in bodiesToCheck)
             {
@@ -97,8 +94,10 @@ namespace TestGenericShooter.Components
                 if (Left < body.Left && Right >= body.Left) encrX = body.Left - Right;
                 else if (Right > body.Right && Left <= body.Right) encrX = body.Right - Left;
 
-                if (Left < body.Left) numPxOverlapX = Right - body.Left; else numPxOverlapX = body.Right - Left;
-                if (Top < body.Top) numPxOverlapY = Bottom - body.Top; else numPxOverlapY = body.Bottom - Top;           
+                if (Left < body.Left) numPxOverlapX = Right - body.Left;
+                else numPxOverlapX = body.Right - Left;
+                if (Top < body.Top) numPxOverlapY = Bottom - body.Top;
+                else numPxOverlapY = body.Bottom - Top;
 
                 if (numPxOverlapX > numPxOverlapY) Position += new GSVector2(0, encrY);
                 else Position += new GSVector2(encrX, 0);

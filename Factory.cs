@@ -58,15 +58,14 @@ namespace TestGenericShooter
             var cBody = new CBody(_physicsWorld, cPosition, false, mWidth, mHeight);
             var cRenderShape = new CRenderShape(_game, cBody);
 
-            cBody.AddGroups(Groups.Obstacle); 
-            cBody.AddGroupsToCheck(Groups.Obstacle);
+            cBody.AddGroups(Groups.Obstacle);
 
             cBody.OnCollision += (mEntity, mBody) =>
-            {
-                if (!mEntity.HasTag("bullet")) return;
-                cBody.HalfSize -= new GSVector2(75, 75);
-                if(cBody.HalfWidth < 200) result.Destroy();
-            };
+                                 {
+                                     if (!mEntity.HasTag("bullet")) return;
+                                     cBody.HalfSize -= new GSVector2(75, 75);
+                                     if (cBody.HalfWidth < 200) result.Destroy();
+                                 };
 
             result.AddComponents(cPosition, cBody, cRenderShape);
             result.AddTags("wall");
