@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestGenericShooter.SpatialHash;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
@@ -12,11 +13,11 @@ namespace TestGenericShooter.Components
         private readonly HashSet<string> _groupsToCheck;
         private readonly HashSet<string> _groupsToIgnoreResolve;
         private readonly bool _isStatic;
-        private readonly PhysicsWorld _physicsWorld;
+        
 
         public CBody(PhysicsWorld mPhysicsWorld, CPosition mCPosition, bool mIsStatic, int mWidth, int mHeight)
         {
-            _physicsWorld = mPhysicsWorld;
+            PhysicsWorld = mPhysicsWorld;
             _cPosition = mCPosition;
             _isStatic = mIsStatic;
             HalfSize = new GSVector2(mWidth/2, mHeight/2);
@@ -28,17 +29,18 @@ namespace TestGenericShooter.Components
             Cells = new HashSet<Cell>();
         }
 
+        public PhysicsWorld PhysicsWorld { get; set; }
         public GSVector2 Velocity { get; set; }
         public HashSet<Cell> Cells { get; set; }
-        public Action<Entity, CBody> OnCollision { get; set; }
+        public Action<float, Entity, CBody> OnCollision { get; set; }
         public GSVector2 HalfSize { get; set; }
 
         #region Shortcut Properties
         public GSVector2 Position { get { return _cPosition.Position; } set { _cPosition.Position = value; } }
-        public int Left { get { return Position.X - HalfSize.X; } }
-        public int Right { get { return Position.X + HalfSize.X; } }
-        public int Top { get { return Position.Y - HalfSize.Y; } }
-        public int Bottom { get { return Position.Y + HalfSize.Y; } }
+        public int Left { get { return _cPosition.X - HalfSize.X; } }
+        public int Right { get { return _cPosition.X + HalfSize.X; } }
+        public int Top { get { return _cPosition.Y - HalfSize.Y; } }
+        public int Bottom { get { return _cPosition.Y + HalfSize.Y; } }
         public int HalfWidth { get { return HalfSize.X; } }
         public int HalfHeight { get { return HalfSize.Y; } }
         public int Width { get { return HalfSize.X*2; } }
@@ -57,7 +59,7 @@ namespace TestGenericShooter.Components
         private bool HasGroup(string mGroup) { return _groups.Contains(mGroup); }
         private bool IsOverlapping(CBody mBody) { return Right > mBody.Left && Left < mBody.Right && (Bottom > mBody.Top && Top < mBody.Bottom); }
 
-        public override void Added() { _physicsWorld.AddBody(this); }
+        public override void Added() { PhysicsWorld.AddBody(this); }
         public override void Removed() { PhysicsWorld.RemoveBody(this); }
         public override void Update(float mFrameTime)
         {
@@ -65,7 +67,7 @@ namespace TestGenericShooter.Components
 
             Position += Velocity*mFrameTime;
 
-            if (_physicsWorld.IsOutOfBounds(this))
+            if (PhysicsWorld.IsOutOfBounds(this))
             {
                 Entity.Destroy();
                 return;
@@ -81,8 +83,8 @@ namespace TestGenericShooter.Components
 
                 if (!IsOverlapping(body)) continue;
 
-                if (OnCollision != null) OnCollision(body.Entity, body);
-                if (body.OnCollision != null) body.OnCollision(Entity, this);
+                if (OnCollision != null) OnCollision(mFrameTime, body.Entity, body);
+                if (body.OnCollision != null) body.OnCollision(mFrameTime, Entity, this);
 
                 if (_groupsToIgnoreResolve.Any(groupToIgnoreResolve => body.HasGroup(groupToIgnoreResolve))) continue;
 
@@ -103,7 +105,7 @@ namespace TestGenericShooter.Components
                 else Position += new GSVector2(encrX, 0);
             }
 
-            _physicsWorld.UpdateBody(this);
+            PhysicsWorld.UpdateBody(this);
         }
     }
 }

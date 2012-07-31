@@ -1,4 +1,4 @@
-namespace TestGenericShooter
+namespace TestGenericShooter.Resources
 {
     public static class Groups
     {
@@ -6,5 +6,6 @@ namespace TestGenericShooter
         public const string Player = "player";
         public const string Enemy = "enemy";
         public const string Obstacle = "obstacle";
+        public const string Decoration = "decoration";
     }
 }

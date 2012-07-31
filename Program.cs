@@ -7,8 +7,9 @@ namespace TestGenericShooter
     {
         private static void Main(string[] args)
         {
-            Settings.Framerate.IsLimited = false;
             Settings.Framerate.Limit = 60;
+            Settings.Framerate.IsLimited = false;
+            Settings.Frametime.StaticValue = 0.1f;
             Settings.Frametime.IsStatic = false;
 
             var game = new GSGame();

@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\release\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -54,20 +54,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\CAI.cs" />
+    <Compile Include="Components\CChild.cs" />
     <Compile Include="Components\CHealth.cs" />
     <Compile Include="Components\CMovement.cs" />
     <Compile Include="Components\CPosition.cs" />
-    <Compile Include="Components\CRenderShape.cs" />
+    <Compile Include="Components\CRender.cs" />
     <Compile Include="Components\CBody.cs" />
     <Compile Include="Components\CControl.cs" />
     <Compile Include="Components\CTargeter.cs" />
-    <Compile Include="Groups.cs" />
+    <Compile Include="GSUtils.cs" />
     <Compile Include="GSVector2.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="GSGame.cs" />
-    <Compile Include="PhysicsWorld.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Groups.cs" />
+    <Compile Include="Resources\Tags.cs" />
+    <Compile Include="Resources\Textures.cs" />
+    <Compile Include="Resources\Tilesets.cs" />
+    <Compile Include="SpatialHash\Cell.cs" />
+    <Compile Include="SpatialHash\PhysicsWorld.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

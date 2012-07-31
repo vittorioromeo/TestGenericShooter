@@ -23,6 +23,6 @@ namespace TestGenericShooter.Components
             TargetPosition = Target.GetComponent<CPosition>();
         }
 
-        public float GetDegreesTowards(int mX, int mY) { return Utils.Math.Angles.TowardsDegrees(new Vector2f(_cPosition.Position.X, _cPosition.Position.Y), new Vector2f(mX, mY)); }
+        public float GetDegreesTowards(int mX, int mY) { return Utils.Math.Angles.TowardsDegrees(new Vector2f(_cPosition.X, _cPosition.Y), new Vector2f(mX, mY)); }
     }
 }

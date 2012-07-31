@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using TestGenericShooter.Components;
 
-namespace TestGenericShooter
+namespace TestGenericShooter.SpatialHash
 {
     public class PhysicsWorld
     {
@@ -49,7 +49,7 @@ namespace TestGenericShooter
             mBody.Cells = cells;
             foreach (var cell in cells) cell.AddBody(mBody);
         }
-        public static void RemoveBody(CBody mBody)
+        public void RemoveBody(CBody mBody)
         {
             foreach (var cell in mBody.Cells)
                 cell.RemoveBody(mBody);
@@ -68,37 +68,23 @@ namespace TestGenericShooter
                    || mBody.Bottom > _rows*_cellSize + _offsetY*_cellSize;
         }
 
-        public static IEnumerable<CBody> GetBodies(CBody mBody)
+        public IEnumerable<CBody> GetBodies(CBody mBody)
         {
             foreach (var cell in mBody.Cells)
                 foreach (var group in mBody.GetGroupsToCheck())
                     foreach (var body in cell.GetBodies(group))
                         yield return body;
         }
-    }
 
-    public class Cell
-    {
-        private readonly Dictionary<string, HashSet<CBody>> _groupedBodies;
-
-        public Cell() { _groupedBodies = new Dictionary<string, HashSet<CBody>>(); }
-
-        public void AddBody(CBody mBody)
+        public bool[,] GetObstacleMap(string mObstacleGroup)
         {
-            foreach (var group in mBody.GetGroups())
-            {
-                if (!_groupedBodies.ContainsKey(group))
-                    _groupedBodies.Add(group, new HashSet<CBody>());
+            var result = new bool[_columns,_rows];
 
-                _groupedBodies[group].Add(mBody);
-            }
+            for (var iX = 0; iX < _columns; iX++)
+                for (var iY = 0; iY < _rows; iY++)
+                    result[iX, iY] = _cells[iX, iY].HasGroup(mObstacleGroup);
+
+            return result;
         }
-        public void RemoveBody(CBody mBody)
-        {
-            foreach (var group in mBody.GetGroups())
-                if (_groupedBodies.ContainsKey(group))
-                    _groupedBodies[group].Remove(mBody);
-        }
-        public IEnumerable<CBody> GetBodies(string mGroup) { return !_groupedBodies.ContainsKey(mGroup) ? new HashSet<CBody>() : _groupedBodies[mGroup]; }
     }
 }
