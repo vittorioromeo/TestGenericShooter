@@ -1,6 +1,7 @@
 using System.Linq;
 using SFML.Window;
 using SFMLStart.Utilities;
+using SFMLStart.Vectors;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
@@ -9,20 +10,31 @@ namespace TestGenericShooter.Components
     {
         private readonly CPosition _cPosition;
 
-        public CTargeter(CPosition mCPosition) { _cPosition = mCPosition; }
+        public CTargeter(CPosition mCPosition, string mTargetTag)
+        {
+            _cPosition = mCPosition;
+            TargetTag = mTargetTag;
+        }
 
         public Entity Target { get; private set; }
         public CPosition TargetPosition { get; private set; }
+        public string TargetTag { get; set; }
 
-        public void FindTarget(string mTag)
+        private void FindTarget()
         {
-            if (Target != null) return;
-
-            Target = Manager.GetEntitiesByTag(mTag).FirstOrDefault();
-            if (Target == null) return;
-            TargetPosition = Target.GetComponent<CPosition>();
+            Target = Entity.Manager.GetEntitiesByTag(TargetTag).OrderBy(x =>
+                                                                        {
+                                                                            var cPosition = x.GetComponent<CPosition>();
+                                                                            return Utils.Math.Distances.Euclidean(_cPosition.X, _cPosition.Y, cPosition.X, cPosition.Y);
+                                                                        }).FirstOrDefault();
+            if (Target != null) TargetPosition = Target.GetComponent<CPosition>();
         }
 
-        public float GetDegreesTowards(int mX, int mY) { return Utils.Math.Angles.TowardsDegrees(new Vector2f(_cPosition.X, _cPosition.Y), new Vector2f(mX, mY)); }
+        public float GetDegreesTowardsTarget() { return Utils.Math.Angles.TowardsDegrees(_cPosition.Position, TargetPosition.Position); }
+        public override void Update(float mFrameTime)
+        {
+            if (Target != null && !Target.IsDead) return;
+            FindTarget();
+        }
     }
 }

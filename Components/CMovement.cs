@@ -1,4 +1,5 @@
 using SFMLStart.Utilities;
+using SFMLStart.Vectors;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
@@ -9,11 +10,21 @@ namespace TestGenericShooter.Components
 
         public CMovement(CBody mCBody) { _cBody = mCBody; }
 
-        public void Stop() { _cBody.Velocity = new GSVector2(0, 0); }
-        public void MoveTowardsAngle(float mDegrees, int mSpeed)
+        public float Angle { get; set; }
+        public float Speed { get; set; }
+        public float Acceleration { get; set; }
+
+        public void Stop()
         {
-            var angleVector = Utils.Math.Angles.ToVectorDegrees(mDegrees);
-            _cBody.Velocity = new GSVector2((int) (angleVector.X*mSpeed), (int) (angleVector.Y*mSpeed));
+            Speed = 0;
+            Acceleration = 0;
+        }
+
+        public override void Update(float mFrameTime)
+        {
+            var angleVector = Utils.Math.Angles.ToVectorDegrees(Angle);
+            _cBody.Velocity = new SSVector2I((int) (angleVector.X*Speed), (int) (angleVector.Y*Speed));
+            Speed += Acceleration;
         }
     }
 }

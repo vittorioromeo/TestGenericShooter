@@ -1,7 +1,7 @@
 using SFML.Window;
 using SFMLStart.Data;
 using SFMLStart.Utilities;
-using TestGenericShooter.Resources;
+using SFMLStart.Vectors;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
@@ -10,8 +10,8 @@ namespace TestGenericShooter.Components
     {
         private readonly CBody _cBody;
         private readonly CMovement _cMovement;
-        private readonly CTargeter _cTargeter;
         private readonly CRender _cRender;
+        private readonly CTargeter _cTargeter;
         private readonly GSGame _game;
         private float _fireDelay;
 
@@ -35,15 +35,14 @@ namespace TestGenericShooter.Components
 
             if (_fireDelay < 0 && nextAction == 1)
             {
-                var fireAngle = _cTargeter.GetDegreesTowards((int) _game.GameWindow.Camera.MousePosition.X*100, (int) _game.GameWindow.Camera.MousePosition.Y*100);
-                var bullet = _game.Factory.BulletWhite(_cBody.Position.X, _cBody.Position.Y, fireAngle, 500);
-                bullet.AddTags(Tags.BulletWhite);
+                var fireAngle = Utils.Math.Angles.TowardsDegrees(new SSVector2F(_cBody.Position.X, _cBody.Position.Y), new SSVector2F(_game.GameWindow.Camera.MousePosition.X * 100, _game.GameWindow.Camera.MousePosition.Y * 100));
+                _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, fireAngle, 500, false);
                 _fireDelay = 4;
 
-                _cRender.Animation = Assets.Animations["charfiring"];
+                _cRender.Animation = Assets.GetAnimation("charfiring");
             }
-            
-            if(nextAction == 0) _cRender.Animation = Assets.Animations["charidle"];
+
+            if (nextAction == 0) _cRender.Animation = Assets.GetAnimation("charidle");
 
             if (nextX == 0 && nextY == 0)
             {
@@ -51,8 +50,9 @@ namespace TestGenericShooter.Components
                 return;
             }
 
-            var angle = Utils.Math.Vectors.ToAngleDegrees(new Vector2f(_game.NextX, _game.NextY));
-            _cMovement.MoveTowardsAngle(angle, speed);
+            var angle = Utils.Math.Vectors.ToAngleDegrees(new SSVector2F(_game.NextX, _game.NextY));
+            _cMovement.Angle = angle;
+            _cMovement.Speed = speed;
         }
     }
 }

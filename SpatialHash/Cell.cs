@@ -6,27 +6,34 @@ namespace TestGenericShooter.SpatialHash
 {
     public class Cell
     {
-        private readonly Dictionary<string, HashSet<CBody>> _groupedBodies;
+        public Cell(int mLeft, int mRight, int mTop, int mBottom, IEnumerable<int> mGroups)
+        {
+            Left = mLeft;
+            Right = mRight;
+            Top = mTop;
+            Bottom = mBottom;
 
-        public Cell() { _groupedBodies = new Dictionary<string, HashSet<CBody>>(); }
+            GroupedBodies = new Dictionary<int, List<CBody>>();
+            foreach (var group in mGroups) GroupedBodies.Add(group, new List<CBody>());
+        }
+
+        public int Left { get; private set; }
+        public int Right { get; private set; }
+        public int Top { get; private set; }
+        public int Bottom { get; private set; }
+
+        public Dictionary<int, List<CBody>> GroupedBodies { get; set; }
 
         public void AddBody(CBody mBody)
         {
-            foreach (var group in mBody.GetGroups())
-            {
-                if (!_groupedBodies.ContainsKey(group))
-                    _groupedBodies.Add(group, new HashSet<CBody>());
-
-                _groupedBodies[group].Add(mBody);
-            }
+            foreach (var group in mBody.Groups)
+                GroupedBodies[group].Add(mBody);
         }
         public void RemoveBody(CBody mBody)
         {
-            foreach (var group in mBody.GetGroups())
-                if (_groupedBodies.ContainsKey(group))
-                    _groupedBodies[group].Remove(mBody);
+            foreach (var group in mBody.Groups)
+                GroupedBodies[group].Remove(mBody);
         }
-        public IEnumerable<CBody> GetBodies(string mGroup) { return !_groupedBodies.ContainsKey(mGroup) ? new HashSet<CBody>() : _groupedBodies[mGroup]; }
-        public bool HasGroup(string mGroup) { return _groupedBodies.ContainsKey(mGroup) && _groupedBodies[mGroup].Any(); }
+        public bool HasGroup(int mGroup) { return GroupedBodies[mGroup].Any(); }
     }
 }

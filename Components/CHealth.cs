@@ -25,7 +25,7 @@ namespace TestGenericShooter.Components
             return mCHealth;
         }
         public static CHealth operator --(CHealth mCHealth)
-        { 
+        {
             mCHealth.Health--;
             return mCHealth;
         }

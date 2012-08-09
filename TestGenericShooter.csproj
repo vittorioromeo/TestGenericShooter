@@ -58,12 +58,14 @@
     <Compile Include="Components\CHealth.cs" />
     <Compile Include="Components\CMovement.cs" />
     <Compile Include="Components\CPosition.cs" />
+    <Compile Include="Components\CPurification.cs" />
+    <Compile Include="Components\CPurifier.cs" />
     <Compile Include="Components\CRender.cs" />
     <Compile Include="Components\CBody.cs" />
     <Compile Include="Components\CControl.cs" />
+    <Compile Include="Components\CShield.cs" />
     <Compile Include="Components\CTargeter.cs" />
     <Compile Include="GSUtils.cs" />
-    <Compile Include="GSVector2.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="GSGame.cs" />
     <Compile Include="Program.cs" />

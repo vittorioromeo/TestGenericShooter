@@ -8,33 +8,46 @@ namespace TestGenericShooter.SpatialHash
         private readonly int _cellSize;
         private readonly Cell[,] _cells;
         private readonly int _columns;
-        private readonly int _offsetX, _offsetY;
-        private readonly int _range;
+        private readonly IEnumerable<int> _groups;
+        private readonly int _offset;
         private readonly int _rows;
 
-        public PhysicsWorld(int mColumns, int mRows, int mCellSize, int mOffsetX = 0, int mOffsetY = 0, int mRange = 0)
+        public PhysicsWorld(IEnumerable<int> mGroups, int mColumns, int mRows, int mCellSize, int mOffset = 0)
         {
+            _groups = mGroups;
             _cells = new Cell[mColumns,mRows];
             _columns = mColumns;
             _rows = mRows;
             _cellSize = mCellSize;
-            _offsetX = mOffsetX;
-            _offsetY = mOffsetY;
-            _range = mRange;
+            _offset = mOffset;
 
             for (var iX = 0; iX < mColumns; iX++)
                 for (var iY = 0; iY < mRows; iY++)
-                    _cells[iX, iY] = new Cell();
+                {
+                    var left = 0 + iX*mCellSize;
+                    var right = _cellSize + iX * mCellSize;
+                    var top = 0 + iY * mCellSize;
+                    var bottom = _cellSize + iY * mCellSize;
+                    
+                    _cells[iX, iY] = new Cell(left, right, top, bottom, _groups);
+                }
         }
+
 
         private HashSet<Cell> CalculateCells(CBody mBody)
         {
+            var startX = mBody.Left/_cellSize + _offset;
+            var startY = mBody.Top/_cellSize + _offset;
+            var endX = mBody.Right/_cellSize + _offset;
+            var endY = mBody.Bottom/_cellSize + _offset;
+
             var result = new HashSet<Cell>();
 
-            var startX = mBody.Left/_cellSize - _range + _offsetX;
-            var endX = mBody.Right/_cellSize + _range + _offsetX;
-            var startY = mBody.Top/_cellSize - _range + _offsetY;
-            var endY = mBody.Bottom/_cellSize + _range + _offsetY;
+            if (startX < 0 || endX >= _columns || startY < 0 || endY >= _rows)
+            {
+                mBody.Entity.Destroy();
+                return result;
+            }
 
             for (var iY = startY; iY <= endY; iY++)
                 for (var iX = startX; iX <= endX; iX++)
@@ -45,9 +58,9 @@ namespace TestGenericShooter.SpatialHash
 
         public void AddBody(CBody mBody)
         {
-            var cells = CalculateCells(mBody);
-            mBody.Cells = cells;
-            foreach (var cell in cells) cell.AddBody(mBody);
+            mBody.Cells = CalculateCells(mBody);
+            foreach (var cell in mBody.Cells)
+                cell.AddBody(mBody);
         }
         public void RemoveBody(CBody mBody)
         {
@@ -60,23 +73,19 @@ namespace TestGenericShooter.SpatialHash
             AddBody(mBody);
         }
 
-        public bool IsOutOfBounds(CBody mBody)
+        public List<CBody> GetBodies(CBody mBody)
         {
-            return mBody.Left < 0 - _offsetX*_cellSize
-                   || mBody.Right > _columns*_cellSize + _offsetX*_cellSize
-                   || mBody.Top < 0 - _offsetY*_cellSize
-                   || mBody.Bottom > _rows*_cellSize + _offsetY*_cellSize;
-        }
+            var result = new List<CBody>();
 
-        public IEnumerable<CBody> GetBodies(CBody mBody)
-        {
             foreach (var cell in mBody.Cells)
-                foreach (var group in mBody.GetGroupsToCheck())
-                    foreach (var body in cell.GetBodies(group))
-                        yield return body;
+                foreach (var group in mBody.GroupsToCheck)
+                    foreach (var body in cell.GroupedBodies[group])
+                        result.Add(body);
+
+            return result;
         }
 
-        public bool[,] GetObstacleMap(string mObstacleGroup)
+        public bool[,] GetObstacleMap(int mObstacleGroup)
         {
             var result = new bool[_columns,_rows];
 

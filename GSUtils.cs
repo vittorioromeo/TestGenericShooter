@@ -4,8 +4,8 @@ namespace TestGenericShooter
     {
         private const int Divisor = 100;
 
-        public static int ToUnits(this int mValue) { return mValue * Divisor; }
-        public static int ToPixels(this int mValue) { return mValue / Divisor; }
+        public static int ToUnits(this int mValue) { return mValue*Divisor; }
+        public static int ToPixels(this int mValue) { return mValue/Divisor; }
         public static string CalculateWall(this string[] mMap, int mX, int mY)
         {
             #region Fill / Single / Single Cross
@@ -19,7 +19,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (!IsWall(mMap, mX, mY - 1) &&
@@ -28,7 +27,6 @@ namespace TestGenericShooter
                 !IsWall(mMap, mX + 1, mY))
             {
                 return ("single");
-
             }
 
             if (IsWall(mMap, mX, mY - 1) &&
@@ -41,7 +39,6 @@ namespace TestGenericShooter
                 !IsWall(mMap, mX + 1, mY + 1))
             {
                 return ("fill");
-
             }
             #endregion
 
@@ -56,7 +53,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -69,7 +65,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -82,7 +77,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -95,7 +89,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
             #endregion
 
@@ -110,7 +103,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -123,7 +115,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -136,7 +127,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -149,7 +139,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
             #endregion
 
@@ -164,7 +153,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -177,7 +165,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
             #endregion
 
@@ -192,7 +179,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -205,7 +191,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -218,7 +203,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
 
             if (IsWall(mMap, mX - 1, mY) &&
@@ -231,7 +215,6 @@ namespace TestGenericShooter
                 IsWall(mMap, mX, mY + 1))
             {
                 return ("fill");
-
             }
             #endregion
 
@@ -437,11 +420,7 @@ namespace TestGenericShooter
 
             return "fill";
         }
-        public static bool IsValue(this string[] mMap, int mX, int mY, int mValue)
-        {
-            return mMap[mY].Substring(mX, 1) == mValue.ToString();
-        }
-
+        public static bool IsValue(this string[] mMap, int mX, int mY, int mValue) { return mMap[mY].Substring(mX, 1) == mValue.ToString(); }
         private static bool IsWall(this string[] mMap, int mX, int mY)
         {
             if (mX <= 0 || mX >= mMap[0].Length - 1 || mY <= 0 || mY >= mMap.GetLength(0) - 1) return true;
