@@ -2,23 +2,24 @@ using SFML.Graphics;
 using SFML.Window;
 using SFMLStart.Data;
 using SFMLStart.Utilities;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
 {
     public class CRender : Component
     {
-        private readonly CPosition _cPosition;
+        private readonly CBody _cBody;
         private readonly GSGame _game;
         private readonly string _labelName;
         private readonly float _rotation;
         private readonly string _textureName;
         private readonly string _tilesetName;
 
-        public CRender(GSGame mGame, CPosition mCPosition, string mTextureName, string mTilesetName = null, string mLabelName = null, float mRotation = 0)
+        public CRender(GSGame mGame, CBody mCBody, string mTextureName, string mTilesetName = null, string mLabelName = null, float mRotation = 0)
         {
             _game = mGame;
-            _cPosition = mCPosition;
+            _cBody = mCBody;
             _textureName = mTextureName;
             _tilesetName = mTilesetName;
             _labelName = mLabelName;
@@ -33,8 +34,8 @@ namespace TestGenericShooter.Components
 
         public override void Added()
         {
-            var x = _cPosition.X.ToPixels();
-            var y = _cPosition.Y.ToPixels();
+            var x = _cBody.X.ToPixels();
+            var y = _cBody.Y.ToPixels();
 
             Sprite = new Sprite(Assets.GetTexture(_textureName));
             if (_tilesetName != null && _labelName != null) Sprite.TextureRect = Assets.Tilesets[_tilesetName].GetTextureRect(_labelName);
@@ -46,8 +47,8 @@ namespace TestGenericShooter.Components
         }
         public override void Update(float mFrameTime)
         {
-            var x = _cPosition.X.ToPixels();
-            var y = _cPosition.Y.ToPixels();
+            var x = _cBody.X.ToPixels();
+            var y = _cBody.Y.ToPixels();
 
             Sprite.Position = new Vector2f(x, y);
             Sprite.Rotation += Torque*mFrameTime;

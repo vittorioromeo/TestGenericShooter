@@ -4,6 +4,7 @@ using SFMLStart.Data;
 using SFMLStart.Utilities;
 using SFMLStart.Vectors;
 using TestGenericShooter.Resources;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
@@ -44,7 +45,7 @@ namespace TestGenericShooter.Components
             _shootDelay++;
             if (_shootDelay <= 100) return;
 
-            var position = Entity.GetComponent<CPosition>().Position;
+            var position = Entity.GetComponentUnSafe<CBody>().Position;
 
             if (Utils.RandomGenerator.GetNextInt(0, 100) > 98)
             {

@@ -3,7 +3,7 @@ using SFMLStart.Utilities;
 using SFMLStart.Vectors;
 using TestGenericShooter.Components;
 using TestGenericShooter.Resources;
-using TestGenericShooter.SpatialHash;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter
@@ -12,21 +12,20 @@ namespace TestGenericShooter
     {
         private readonly GSGame _game;
         private readonly Manager _manager;
-        private readonly PhysicsWorld _physicsWorld;
+        private readonly World _world;
 
-        public Factory(GSGame mGame, Manager mManager, PhysicsWorld mPhysicsWorld)
+        public Factory(GSGame mGame, Manager mManager, World mWorld)
         {
             _game = mGame;
             _manager = mManager;
-            _physicsWorld = mPhysicsWorld;
+            _world = mWorld;
         }
 
         #region Components
-        private CPosition Position(int mX, int mY) { return new CPosition(new SSVector2I(mX, mY)); }
-        private CBody Body(CPosition mCPosition, int mWidth, int mHeight, bool mIsStatic = false) { return new CBody(_physicsWorld, mCPosition, mIsStatic, mWidth, mHeight); }
-        private CRender Render(CPosition mCPosition, string mTextureName, string mTilesetName = null, string mLabelName = null, float mRotation = 0) { return new CRender(_game, mCPosition, mTextureName, mTilesetName, mLabelName, mRotation); }
+        private CBody Body(SSVector2I mPosition, int mWidth, int mHeight, bool mIsStatic = false) { return new CBody(_world, mPosition, mIsStatic, mWidth, mHeight); }
+        private CRender Render(CBody mCBody, string mTextureName, string mTilesetName = null, string mLabelName = null, float mRotation = 0) { return new CRender(_game, mCBody, mTextureName, mTilesetName, mLabelName, mRotation); }
         private CMovement Movement(CBody mCBody) { return new CMovement(mCBody); }
-        private CTargeter Targeter(CPosition mCPosition, string mTargetTag) { return new CTargeter(mCPosition, mTargetTag); }
+        private CTargeter Targeter(CBody mCBody, string mTargetTag) { return new CTargeter(mCBody, mTargetTag); }
         private CControl Control(CBody mCBody, CMovement mCMovement, CTargeter mCTargeter, CRender mCRender) { return new CControl(_game, mCBody, mCMovement, mCTargeter, mCRender); }
         private CChild Child(Entity mParent, CBody mCBody) { return new CChild(mParent, mCBody); }
         private CHealth Health(int mHealth) { return new CHealth(mHealth); }
@@ -40,14 +39,13 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
-            var cBody = Body(cPosition, 1600, 1600, true);
-            var cRender = Render(cPosition, Textures.WallBlack, Tilesets.Wall, mLabelName, mRotation);
+            var cBody = Body(new SSVector2I(mX, mY), 1600, 1600, true);
+            var cRender = Render(cBody, Textures.WallBlack, Tilesets.Wall, mLabelName, mRotation);
             var cPurification = Purification(cRender);
 
             cBody.AddGroups(Groups.Obstacle);
 
-            result.AddComponents(cPosition, cBody, cRender, cPurification);
+            result.AddComponents(cBody, cRender, cPurification);
             result.AddTags(Tags.Wall, Tags.DestroysBullets, Tags.Purifiable);
 
             return result;
@@ -56,15 +54,14 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
             var cHealth = Health(85);
-            var cBody = Body(cPosition, 1600, 1600, true);
-            var cRender = Render(cPosition, Textures.WallBlack, Tilesets.Wall, "breakable");
+            var cBody = Body(new SSVector2I(mX, mY), 1600, 1600, true);
+            var cRender = Render(cBody, Textures.WallBlack, Tilesets.Wall, "breakable");
             var cPurification = Purification(cRender);
 
             cBody.AddGroups(Groups.Obstacle);
 
-            result.AddComponents(cPosition, cHealth, cBody, cRender, cPurification);
+            result.AddComponents(cHealth, cBody, cRender, cPurification);
             result.AddTags(Tags.Wall, Tags.DamagedByAny, Tags.Purifiable);
 
             cRender.Sprite.Rotation = Utils.RandomGenerator.GetNextInt(0, 4)*90;
@@ -75,14 +72,13 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
-            var cBody = Body(cPosition, 1600, 1600, true);
-            var cRender = Render(cPosition, mTextureName, mTilesetName, mLabelName, mRotation);
+            var cBody = Body(new SSVector2I(mX, mY), 1600, 1600, true);
+            var cRender = Render(cBody, mTextureName, mTilesetName, mLabelName, mRotation);
             var cPurification = Purification(cRender);
 
             cBody.AddGroups(Groups.Decoration);
 
-            result.AddComponents(cPosition, cBody, cRender, cPurification);
+            result.AddComponents(cBody, cRender, cPurification);
             result.AddTags(Tags.Decoration, Tags.Purifiable);
 
             return result;
@@ -94,18 +90,17 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
             var cHealth = Health(10);
-            var cBody = Body(cPosition, 1000, 1000);
+            var cBody = Body(new SSVector2I(mX, mY), 1000, 1000);
             var cMovement = Movement(cBody);
-            var cTargeter = Targeter(cPosition, Tags.Enemy);
-            var cRender = Render(cPosition, Textures.CharPlayer, Tilesets.Char, "normal");
+            var cTargeter = Targeter(cBody, Tags.Enemy);
+            var cRender = Render(cBody, Textures.CharPlayer, Tilesets.Char, "normal");
             var cControl = Control(cBody, cMovement, cTargeter, cRender);
 
             cBody.AddGroups(Groups.Character, Groups.Friendly);
             cBody.AddGroupsToCheck(Groups.Obstacle);
 
-            result.AddComponents(cPosition, cHealth, cBody, cMovement, cTargeter, cControl, cRender);
+            result.AddComponents( cHealth, cBody, cMovement, cTargeter, cControl, cRender);
             result.AddTags(Tags.Char, Tags.Friendly, Tags.DamagedByBlack);
 
             Aura(result, mX, mY, false);
@@ -117,12 +112,11 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
             var cHealth = Health(6);
-            var cBody = Body(cPosition, 1000, 1000);
+            var cBody = Body(new SSVector2I(mX, mY), 1000, 1000);
             var cMovement = Movement(cBody);
-            var cTargeter = Targeter(cPosition, Tags.Enemy);
-            var cRender = Render(cPosition, Textures.CharFriendly, Tilesets.Char, "normal");
+            var cTargeter = Targeter(cBody, Tags.Enemy);
+            var cRender = Render(cBody, Textures.CharFriendly, Tilesets.Char, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender);
 
             cBody.AddGroups(Groups.Character, Groups.Friendly);
@@ -130,7 +124,7 @@ namespace TestGenericShooter
 
             cAI.Friendly = true;
 
-            result.AddComponents(cPosition, cHealth, cBody, cMovement, cTargeter, cRender, cAI);
+            result.AddComponents(cHealth, cBody, cMovement, cTargeter, cRender, cAI);
             result.AddTags(Tags.Char, Tags.Friendly, Tags.DamagedByBlack);
 
             Aura(result, mX, mY, false);
@@ -141,12 +135,11 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
             var cHealth = Health(12);
-            var cBody = Body(cPosition, 2000, 2000);
+            var cBody = Body(new SSVector2I(mX, mY), 2000, 2000);
             var cMovement = Movement(cBody);
-            var cTargeter = Targeter(cPosition, Tags.Enemy);
-            var cRender = Render(cPosition, Textures.BigCharFriendly, Tilesets.BigChar, "normal");
+            var cTargeter = Targeter(cBody, Tags.Enemy);
+            var cRender = Render(cBody, Textures.BigCharFriendly, Tilesets.BigChar, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender, true);
 
             cBody.AddGroups(Groups.Character, Groups.Friendly);
@@ -154,7 +147,7 @@ namespace TestGenericShooter
 
             cAI.Friendly = true;
 
-            result.AddComponents(cPosition, cHealth, cBody, cMovement, cTargeter, cRender, cAI);
+            result.AddComponents( cHealth, cBody, cMovement, cTargeter, cRender, cAI);
             result.AddTags(Tags.Char, Tags.Friendly, Tags.DamagedByBlack);
 
             Aura(result, mX, mY, false);
@@ -165,18 +158,17 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
             var cHealth = Health(6);
-            var cBody = Body(cPosition, 1000, 1000);
+            var cBody = Body(new SSVector2I(mX, mY), 1000, 1000);
             var cMovement = Movement(cBody);
-            var cTargeter = Targeter(cPosition, Tags.Friendly);
-            var cRender = Render(cPosition, Textures.CharBlack, Tilesets.Char, "normal");
+            var cTargeter = Targeter(cBody, Tags.Friendly);
+            var cRender = Render(cBody, Textures.CharBlack, Tilesets.Char, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender);
 
             cBody.AddGroups(Groups.Character, Groups.Enemy);
             cBody.AddGroupsToCheck(Groups.Obstacle);
 
-            result.AddComponents(cPosition, cHealth, cBody, cMovement, cTargeter, cRender, cAI);
+            result.AddComponents(cHealth, cBody, cMovement, cTargeter, cRender, cAI);
             result.AddTags(Tags.Char, Tags.Enemy, Tags.DamagedByWhite);
 
             Aura(result, mX, mY, true);
@@ -187,18 +179,17 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
             var cHealth = Health(12);
-            var cBody = Body(cPosition, 2000, 2000);
+            var cBody = Body(new SSVector2I(mX, mY), 2000, 2000);
             var cMovement = Movement(cBody);
-            var cTargeter = Targeter(cPosition, Tags.Friendly);
-            var cRender = Render(cPosition, Textures.BigCharBlack, Tilesets.BigChar, "normal");
+            var cTargeter = Targeter(cBody, Tags.Friendly);
+            var cRender = Render(cBody, Textures.BigCharBlack, Tilesets.BigChar, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender, true);
 
             cBody.AddGroups(Groups.Character, Groups.Enemy);
             cBody.AddGroupsToCheck(Groups.Obstacle);
 
-            result.AddComponents(cPosition, cHealth, cBody, cMovement, cTargeter, cRender, cAI);
+            result.AddComponents(cHealth, cBody, cMovement, cTargeter, cRender, cAI);
             result.AddTags(Tags.Char, Tags.Enemy, Tags.DamagedByWhite);
 
             Aura(result, mX, mY, true);
@@ -211,15 +202,14 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
-            var cBody = Body(cPosition, 4500, 4500);
+            var cBody = Body(new SSVector2I(mX, mY), 4500, 4500);
             var cChild = Child(mParent, cBody);
             var cPurifier = Purifier(cBody, mEnemy);
 
             cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Decoration);
             cBody.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Decoration);
 
-            result.AddComponents(cPosition, cBody, cChild, cPurifier);
+            result.AddComponents(cBody, cChild, cPurifier);
 
             return result;
         }
@@ -227,14 +217,13 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
-            var cBody = Body(cPosition, 4500, 4500);
+            var cBody = Body(new SSVector2I(mX, mY), 4500, 4500);
             var cChild = Child(mParent, cBody);
             var cShield = new CShield(_game, cBody);
 
             cBody.AddGroups(Groups.Character);
 
-            result.AddComponents(cPosition, cBody, cChild, cShield);
+            result.AddComponents(cBody, cChild, cShield);
             result.AddTags(Tags.Shield);
 
             return result;
@@ -244,10 +233,9 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
-            var cBody = Body(cPosition, 250, 250);
+            var cBody = Body(new SSVector2I(mX, mY), 250, 250);
             var cMovement = Movement(cBody);
-            var cRender = Render(cPosition, mTextureName);
+            var cRender = Render(cBody, mTextureName);
             var cPurifier = Purifier(cBody, mEnemy);
 
             cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
@@ -280,7 +268,7 @@ namespace TestGenericShooter
 
             cRender.Torque = 8;
 
-            result.AddComponents(cPosition, cBody, cMovement, cRender, cPurifier);
+            result.AddComponents(cBody, cMovement, cRender, cPurifier);
             result.AddTags(Tags.Bullet);
 
             return result;
@@ -297,10 +285,9 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
-            var cBody = Body(cPosition, 500, 500);
+            var cBody = Body(new SSVector2I(mX, mY), 500, 500);
             var cMovement = Movement(cBody);
-            var cRender = Render(cPosition, mTextureName);
+            var cRender = Render(cBody, mTextureName);
             var cPurifier = Purifier(cBody, mEnemy);
 
             cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
@@ -333,7 +320,7 @@ namespace TestGenericShooter
 
             cRender.Torque = 25;
 
-            result.AddComponents(cPosition, cBody, cMovement, cRender);
+            result.AddComponents(cBody, cMovement, cRender);
             result.AddTags(Tags.Bullet);
 
             return result;
@@ -350,10 +337,9 @@ namespace TestGenericShooter
         {
             var result = new Entity(_manager);
 
-            var cPosition = Position(mX, mY);
-            var cBody = Body(cPosition, 250, 250);
+            var cBody = Body(new SSVector2I(mX, mY), 250, 250);
             var cMovement = Movement(cBody);
-            var cRender = Render(cPosition, mTextureName);
+            var cRender = Render(cBody, mTextureName);
 
             cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
             cBody.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Character);
@@ -381,7 +367,7 @@ namespace TestGenericShooter
 
             cRender.Torque = 8;
 
-            result.AddComponents(cPosition, cBody, cMovement, cRender);
+            result.AddComponents(cBody, cMovement, cRender);
             result.AddTags(Tags.Spore);
 
             cRender.Sprite.Color = new Color(255, 255, 255, 125);

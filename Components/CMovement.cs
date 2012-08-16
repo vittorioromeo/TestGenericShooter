@@ -1,5 +1,6 @@
 using SFMLStart.Utilities;
 using SFMLStart.Vectors;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components

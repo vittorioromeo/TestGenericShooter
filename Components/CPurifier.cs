@@ -1,4 +1,5 @@
 using TestGenericShooter.Resources;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
@@ -15,7 +16,7 @@ namespace TestGenericShooter.Components
                                  {
                                      if (!mEntity.HasTag(Tags.Purifiable)) return;
 
-                                     var cPurification = mEntity.GetComponent<CPurification>();
+                                     var cPurification = mEntity.GetComponentUnSafe<CPurification>();
                                      cPurification.Purifying = !mEnemy;
                                  };
         }

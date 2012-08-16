@@ -7,7 +7,7 @@ using SFMLStart.Data;
 using SFMLStart.Utilities;
 using TestGenericShooter.Components;
 using TestGenericShooter.Resources;
-using TestGenericShooter.SpatialHash;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter
@@ -15,13 +15,13 @@ namespace TestGenericShooter
     public class GSGame : Game
     {
         private readonly Manager _manager;
-        private readonly PhysicsWorld _physicsWorld;
+        private readonly World _world;
 
         public GSGame()
         {
             _manager = new Manager();
-            _physicsWorld = new PhysicsWorld(Groups.GroupArray, 21, 16, 1600);
-            Factory = new Factory(this, _manager, _physicsWorld);
+            _world = new World(Groups.GroupArray, 21, 16, 1600);
+            Factory = new Factory(this, _manager, _world);
 
             OnUpdate += _manager.Update;
             OnUpdate += UpdateInputs;
@@ -61,7 +61,7 @@ namespace TestGenericShooter
             const int sizeX = 20;
             const int sizeY = 15;
             
-            var map = new[]
+            var mapzxv = new[]
                           {
                               "11111111111111111111",
                               "16633333777744444551",
@@ -80,7 +80,7 @@ namespace TestGenericShooter
                               "11111111111111111111"
                           };
 
-            var map3 = new[]
+            var mapbcxz = new[]
                        {
                            "11111111111111111111",
                            "10000100000000000601",
@@ -119,7 +119,7 @@ namespace TestGenericShooter
                              "11111111111111111111"
                          };
 
-            var maper = new[]
+            var map = new[]
                       {
                           "11111111111111111111",
                           "10000000000000000001",
@@ -202,12 +202,12 @@ namespace TestGenericShooter
         private void UpdateInputs(float mFrameTime) { NextX = NextY = NextAction = 0; }
         private void UpdatePurification(float mFrameTime)
         {
-            //var map = _physicsWorld.GetObstacleMap(Groups.Obstacle);
+            //var map = _world.GetObstacleMap(Groups.Obstacle);
 
             if (!_manager.HasEntityByTag(Tags.Friendly))
-                foreach (var cPurification in _manager.GetEntitiesByTag(Tags.Purifiable).Select(x => x.GetComponent<CPurification>())) cPurification.Purifying = false;
+                foreach (var cPurification in _manager.GetEntitiesByTag(Tags.Purifiable).Select(x => x.GetComponentUnSafe<CPurification>())) cPurification.Purifying = false;
             if (!_manager.HasEntityByTag(Tags.Enemy))
-                foreach (var cPurification in _manager.GetEntitiesByTag(Tags.Purifiable).Select(x => x.GetComponent<CPurification>())) cPurification.Purifying = true;
+                foreach (var cPurification in _manager.GetEntitiesByTag(Tags.Purifiable).Select(x => x.GetComponentUnSafe<CPurification>())) cPurification.Purifying = true;
         }
     }
 }

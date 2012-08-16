@@ -2,35 +2,36 @@ using System.Linq;
 using SFML.Window;
 using SFMLStart.Utilities;
 using SFMLStart.Vectors;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
 {
     public class CTargeter : Component
     {
-        private readonly CPosition _cPosition;
+        private readonly CBody _cBody;
 
-        public CTargeter(CPosition mCPosition, string mTargetTag)
+        public CTargeter(CBody mCBody, string mTargetTag)
         {
-            _cPosition = mCPosition;
+            _cBody = mCBody;
             TargetTag = mTargetTag;
         }
 
         public Entity Target { get; private set; }
-        public CPosition TargetPosition { get; private set; }
+        public CBody TargetBody { get; private set; }
         public string TargetTag { get; set; }
 
         private void FindTarget()
         {
             Target = Entity.Manager.GetEntitiesByTag(TargetTag).OrderBy(x =>
                                                                         {
-                                                                            var cPosition = x.GetComponent<CPosition>();
-                                                                            return Utils.Math.Distances.Euclidean(_cPosition.X, _cPosition.Y, cPosition.X, cPosition.Y);
+                                                                            var cBody = x.GetComponentUnSafe<CBody>();
+                                                                            return Utils.Math.Distances.Euclidean(_cBody.Position.X, _cBody.Position.Y, cBody.Position.X, cBody.Position.Y);
                                                                         }).FirstOrDefault();
-            if (Target != null) TargetPosition = Target.GetComponent<CPosition>();
+            if (Target != null) TargetBody = Target.GetComponentUnSafe<CBody>();
         }
 
-        public float GetDegreesTowardsTarget() { return Utils.Math.Angles.TowardsDegrees(_cPosition.Position, TargetPosition.Position); }
+        public float GetDegreesTowardsTarget() { return Utils.Math.Angles.TowardsDegrees(_cBody.Position, TargetBody.Position); }
         public override void Update(float mFrameTime)
         {
             if (Target != null && !Target.IsDead) return;

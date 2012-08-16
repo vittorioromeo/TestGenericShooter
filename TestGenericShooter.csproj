@@ -57,13 +57,12 @@
     <Compile Include="Components\CChild.cs" />
     <Compile Include="Components\CHealth.cs" />
     <Compile Include="Components\CMovement.cs" />
-    <Compile Include="Components\CPosition.cs" />
     <Compile Include="Components\CPurification.cs" />
     <Compile Include="Components\CPurifier.cs" />
     <Compile Include="Components\CRender.cs" />
-    <Compile Include="Components\CBody.cs" />
     <Compile Include="Components\CControl.cs" />
     <Compile Include="Components\CShield.cs" />
+    <Compile Include="Components\CStats.cs" />
     <Compile Include="Components\CTargeter.cs" />
     <Compile Include="GSUtils.cs" />
     <Compile Include="Factory.cs" />
@@ -74,8 +73,6 @@
     <Compile Include="Resources\Tags.cs" />
     <Compile Include="Resources\Textures.cs" />
     <Compile Include="Resources\Tilesets.cs" />
-    <Compile Include="SpatialHash\Cell.cs" />
-    <Compile Include="SpatialHash\PhysicsWorld.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -84,6 +81,10 @@
     <ProjectReference Include="..\SFMLStart\SFMLStart.csproj">
       <Project>{c8df8299-2b2e-415b-849e-4cbbc1cb4aa6}</Project>
       <Name>SFMLStart</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VeeCollision\VeeCollision.csproj">
+      <Project>{cd21151c-e8c0-4c0e-a92b-ac998e9f7c1a}</Project>
+      <Name>VeeCollision</Name>
     </ProjectReference>
     <ProjectReference Include="..\VeeEntitySystem2012\VeeEntitySystem2012.csproj">
       <Project>{07789116-c18e-4a15-b8f2-bc9a83089b0d}</Project>

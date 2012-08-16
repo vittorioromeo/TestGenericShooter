@@ -1,4 +1,5 @@
 using TestGenericShooter.Resources;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
@@ -17,7 +18,7 @@ namespace TestGenericShooter.Components
                                  {
                                      if (!mEntity.HasTag(Tags.BulletBlack) || mEntity.IsDead) return;
 
-                                     var cMovement = mEntity.GetComponent<CMovement>();
+                                     var cMovement = mEntity.GetComponentUnSafe<CMovement>();
                                      var speed = cMovement.Speed;
                                      var angle = cMovement.Angle;
 

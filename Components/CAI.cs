@@ -4,6 +4,7 @@ using SFMLStart.Data;
 using SFMLStart.Utilities;
 using SFMLStart.Utilities.Timelines;
 using TestGenericShooter.Resources;
+using VeeCollision;
 using VeeEntitySystem2012;
 
 namespace TestGenericShooter.Components
