@@ -52,7 +52,6 @@ namespace TestGenericShooter.Components
         public void AddGroupsToCheck(params int[] mGroups)
         {
             foreach (var group in mGroups) GroupsToCheck.Add(group);
-            ;
         }
         public void AddGroupsToIgnoreResolve(params int[] mGroups) { foreach (var group in mGroups) GroupsToIgnoreResolve.Add(group); }
 
@@ -69,7 +68,10 @@ namespace TestGenericShooter.Components
 
             var checkedBodies = new HashSet<CBody> {this};
             var bodiesToCheck = PhysicsWorld.GetBodies(this);
-            bodiesToCheck.Sort((a, b) => Velocity.X > 0 ? a.Position.X.CompareTo(b.Position.X) : b.Position.X.CompareTo(a.Position.X));
+
+            bodiesToCheck.Sort((a, b) => Velocity.X > 0 ? 
+                a.Position.X.CompareTo(b.Position.X) : 
+                b.Position.X.CompareTo(a.Position.X));
 
             foreach (var body in bodiesToCheck)
             {
@@ -78,22 +80,33 @@ namespace TestGenericShooter.Components
 
                 if (!IsOverlapping(body)) continue;
 
-                if (OnCollision != null) OnCollision(mFrameTime, body.Entity, body);
-                if (body.OnCollision != null) body.OnCollision(mFrameTime, Entity, this);
+                if (OnCollision != null) 
+                    OnCollision(mFrameTime, body.Entity, body);
+                if (body.OnCollision != null) 
+                    body.OnCollision(mFrameTime, Entity, this);
 
-                if (GroupsToIgnoreResolve.Any(x => body.Groups.Contains(x))) continue;
+                if (GroupsToIgnoreResolve.Any(x => body.Groups.Contains(x))) 
+                    continue;
 
                 int encrX = 0, encrY = 0;
 
-                if (Bottom < body.Bottom && Bottom >= body.Top) encrY = body.Top - Bottom;
-                else if (Top > body.Top && Top <= body.Bottom) encrY = body.Bottom - Top;
-                if (Left < body.Left && Right >= body.Left) encrX = body.Left - Right;
-                else if (Right > body.Right && Left <= body.Right) encrX = body.Right - Left;
+                if (Bottom < body.Bottom && Bottom >= body.Top) 
+                    encrY = body.Top - Bottom;
+                else if (Top > body.Top && Top <= body.Bottom)
+                    encrY = body.Bottom - Top;
 
-                var numPxOverlapX = Left < body.Left ? Right - body.Left : body.Right - Left;
-                var numPxOverlapY = Top < body.Top ? Bottom - body.Top : body.Bottom - Top;
+                if (Left < body.Left && Right >= body.Left) 
+                    encrX = body.Left - Right;
+                else if (Right > body.Right && Left <= body.Right) 
+                    encrX = body.Right - Left;
 
-                Position += numPxOverlapX > numPxOverlapY ? new SSVector2I(0, encrY) : new SSVector2I(encrX, 0);
+                var numPxOverlapX = Left < body.Left ? 
+                    Right - body.Left : body.Right - Left;
+                var numPxOverlapY = Top < body.Top ? 
+                    Bottom - body.Top : body.Bottom - Top;
+
+                Position += numPxOverlapX > numPxOverlapY ?
+                    new SSVector2I(0, encrY) : new SSVector2I(encrX, 0);
             }
 
             PhysicsWorld.UpdateBody(this);
