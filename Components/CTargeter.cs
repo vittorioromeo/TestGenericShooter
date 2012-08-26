@@ -10,6 +10,7 @@ namespace TestGenericShooter.Components
     public class CTargeter : Component
     {
         private readonly CBody _cBody;
+        private int _retargetDelay; 
 
         public CTargeter(CBody mCBody, string mTargetTag)
         {
@@ -34,8 +35,13 @@ namespace TestGenericShooter.Components
         public float GetDegreesTowardsTarget() { return Utils.Math.Angles.TowardsDegrees(_cBody.Position, TargetBody.Position); }
         public override void Update(float mFrameTime)
         {
-            if (Target != null && !Target.IsDead) return;
-            FindTarget();
+            _retargetDelay--;
+
+            if (_retargetDelay < 0 || Target == null || Target.IsDead)
+            {
+                FindTarget();
+                _retargetDelay = 200;
+            }
         }
     }
 }

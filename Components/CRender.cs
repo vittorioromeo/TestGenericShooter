@@ -43,7 +43,7 @@ namespace TestGenericShooter.Components
             Sprite.Position = new Vector2f(x, y);
             Sprite.Origin = new Vector2f(Sprite.GetGlobalBounds().Width/2, Sprite.GetGlobalBounds().Height/2);
 
-            _game.OnDrawAfterCamera += Draw;
+            _game.AddDrawAction(Draw);
         }
         public override void Update(float mFrameTime)
         {
@@ -57,6 +57,9 @@ namespace TestGenericShooter.Components
             Animation.Update(mFrameTime);
             Sprite.TextureRect = Assets.Tilesets[_tilesetName].GetTextureRect(Animation.GetCurrentLabel());
         }
-        public override void Removed() { _game.OnDrawAfterCamera -= Draw; }
+        public override void Removed()
+        {
+            _game.RemoveDrawAction(Draw);
+        }
     }
 }
