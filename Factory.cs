@@ -22,7 +22,7 @@ namespace TestGenericShooter
         }
 
         #region Components
-        private CBody Body(SSVector2I mPosition, int mWidth, int mHeight, bool mIsStatic = false) { return new CBody(_world, mPosition, mIsStatic, mWidth, mHeight); }
+        private CBody Body(SSVector2I mPosition, int mWidth, int mHeight, bool mIsStatic = false) { return new CBody(new Body(_world, mPosition, mIsStatic, mWidth, mHeight)); }
         private CRender Render(CBody mCBody, string mTextureName, string mTilesetName = null, string mLabelName = null, float mRotation = 0) { return new CRender(_game, mCBody, mTextureName, mTilesetName, mLabelName, mRotation); }
         private CMovement Movement(CBody mCBody) { return new CMovement(mCBody); }
         private CTargeter Targeter(CBody mCBody, string mTargetTag) { return new CTargeter(mCBody, mTargetTag); }
@@ -43,7 +43,7 @@ namespace TestGenericShooter
             var cRender = Render(cBody, Textures.WallBlack, Tilesets.Wall, mLabelName, mRotation);
             var cPurification = Purification(cRender);
 
-            cBody.AddGroups(Groups.Obstacle);
+            cBody.Body.AddGroups(Groups.Obstacle);
 
             result.AddComponents(cBody, cRender, cPurification);
             result.AddTags(Tags.Wall, Tags.DestroysBullets, Tags.Purifiable);
@@ -59,12 +59,12 @@ namespace TestGenericShooter
             var cRender = Render(cBody, Textures.WallBlack, Tilesets.Wall, "breakable");
             var cPurification = Purification(cRender);
 
-            cBody.AddGroups(Groups.Obstacle);
+            cBody.Body.AddGroups(Groups.Obstacle);
 
             result.AddComponents(cHealth, cBody, cRender, cPurification);
             result.AddTags(Tags.Wall, Tags.DamagedByAny, Tags.Purifiable);
 
-            cRender.Sprite.Rotation = Utils.RandomGenerator.GetNextInt(0, 4)*90;
+            cRender.Sprite.Rotation = Utils.Random.Next(0, 4)*90;
 
             return result;
         }
@@ -76,7 +76,7 @@ namespace TestGenericShooter
             var cRender = Render(cBody, mTextureName, mTilesetName, mLabelName, mRotation);
             var cPurification = Purification(cRender);
 
-            cBody.AddGroups(Groups.Decoration);
+            cBody.Body.AddGroups(Groups.Decoration);
 
             result.AddComponents(cBody, cRender, cPurification);
             result.AddTags(Tags.Decoration, Tags.Purifiable);
@@ -98,8 +98,8 @@ namespace TestGenericShooter
             var cControl = Control(cBody, cMovement, cTargeter, cRender);
             //var cShadower = new CShadower(_game, cBody);
 
-            cBody.AddGroups(Groups.Character, Groups.Friendly);
-            cBody.AddGroupsToCheck(Groups.Obstacle);
+            cBody.Body.AddGroups(Groups.Character, Groups.Friendly);
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle);
 
             result.AddComponents(cHealth, cBody, cMovement, cTargeter, cControl, cRender);
             result.AddTags(Tags.Char, Tags.Friendly, Tags.DamagedByBlack);
@@ -120,8 +120,8 @@ namespace TestGenericShooter
             var cRender = Render(cBody, Textures.CharFriendly, Tilesets.Char, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender);
 
-            cBody.AddGroups(Groups.Character, Groups.Friendly);
-            cBody.AddGroupsToCheck(Groups.Obstacle);
+            cBody.Body.AddGroups(Groups.Character, Groups.Friendly);
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle);
 
             cAI.Friendly = true;
 
@@ -143,8 +143,8 @@ namespace TestGenericShooter
             var cRender = Render(cBody, Textures.BigCharFriendly, Tilesets.BigChar, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender, true);
 
-            cBody.AddGroups(Groups.Character, Groups.Friendly);
-            cBody.AddGroupsToCheck(Groups.Obstacle);
+            cBody.Body.AddGroups(Groups.Character, Groups.Friendly);
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle);
 
             cAI.Friendly = true;
 
@@ -165,13 +165,11 @@ namespace TestGenericShooter
             var cTargeter = Targeter(cBody, Tags.Friendly);
             var cRender = Render(cBody, Textures.CharBlack, Tilesets.Char, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender);
-            var cShadower = new CShadower(_game, cBody);
-            var cLineOfSight = new CLineOfSight(cBody, cShadower) {TargetTag = Tags.Friendly, Angle = 90, Amplitude = 30};
 
-            cBody.AddGroups(Groups.Character, Groups.Enemy);
-            cBody.AddGroupsToCheck(Groups.Obstacle);
+            cBody.Body.AddGroups(Groups.Character, Groups.Enemy);
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle);
 
-            result.AddComponents(cHealth, cBody, cMovement, cTargeter, cRender, cAI, cShadower, cLineOfSight);
+            result.AddComponents(cHealth, cBody, cMovement, cTargeter, cRender, cAI);
             result.AddTags(Tags.Char, Tags.Enemy, Tags.DamagedByWhite);
 
             Aura(result, mX, mY, true);
@@ -189,8 +187,8 @@ namespace TestGenericShooter
             var cRender = Render(cBody, Textures.BigCharBlack, Tilesets.BigChar, "normal");
             var cAI = AI(cBody, cMovement, cTargeter, cRender, true);
 
-            cBody.AddGroups(Groups.Character, Groups.Enemy);
-            cBody.AddGroupsToCheck(Groups.Obstacle);
+            cBody.Body.AddGroups(Groups.Character, Groups.Enemy);
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle);
 
             result.AddComponents(cHealth, cBody, cMovement, cTargeter, cRender, cAI);
             result.AddTags(Tags.Char, Tags.Enemy, Tags.DamagedByWhite);
@@ -209,8 +207,8 @@ namespace TestGenericShooter
             var cChild = Child(mParent, cBody);
             var cPurifier = Purifier(cBody, mEnemy);
 
-            cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Decoration);
-            cBody.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Decoration);
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle, Groups.Decoration);
+            cBody.Body.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Decoration);
 
             result.AddComponents(cBody, cChild, cPurifier);
 
@@ -224,7 +222,7 @@ namespace TestGenericShooter
             var cChild = Child(mParent, cBody);
             var cShield = new CShield(_game, cBody);
 
-            cBody.AddGroups(Groups.Character);
+            cBody.Body.AddGroups(Groups.Character);
 
             result.AddComponents(cBody, cChild, cShield);
             result.AddTags(Tags.Shield);
@@ -241,29 +239,30 @@ namespace TestGenericShooter
             var cRender = Render(cBody, mTextureName);
             var cPurifier = Purifier(cBody, mEnemy);
 
-            cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
-            cBody.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Character);
-            cBody.OnCollision += (mFrameTime, mEntity, mBody) =>
-                                 {
-                                     var cHealth = mEntity.GetComponent<CHealth>();
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
+            cBody.Body.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Character);
+            cBody.OnCollision += (mCollisionInfo) =>
+                                     {
+                                         var entity = (Entity)mCollisionInfo.UserData;
+                                     var cHealth = entity.GetComponent<CHealth>();
 
-                                     if (mEntity.HasTag(Tags.DamagedByAny))
+                                     if (entity.HasTag(Tags.DamagedByAny))
                                      {
                                          cHealth--;
                                          result.Destroy();
                                      }
-                                     else if (result.HasTag(Tags.BulletWhite) && mEntity.HasTag(Tags.DamagedByWhite))
+                                     else if (result.HasTag(Tags.BulletWhite) && entity.HasTag(Tags.DamagedByWhite))
                                      {
                                          cHealth--;
                                          result.Destroy();
                                      }
-                                     else if (result.HasTag(Tags.BulletBlack) && mEntity.HasTag(Tags.DamagedByBlack))
+                                     else if (result.HasTag(Tags.BulletBlack) && entity.HasTag(Tags.DamagedByBlack))
                                      {
                                          cHealth--;
                                          result.Destroy();
                                      }
 
-                                     if (mEntity.HasTag(Tags.DestroysBullets)) result.Destroy();
+                                     if (entity.HasTag(Tags.DestroysBullets)) result.Destroy();
                                  };
 
             cMovement.Angle = mDegrees;
@@ -293,29 +292,31 @@ namespace TestGenericShooter
             var cRender = Render(cBody, mTextureName);
             var cPurifier = Purifier(cBody, mEnemy);
 
-            cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
-            cBody.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Character);
-            cBody.OnCollision += (mFrameTime, mEntity, mBody) =>
-                                 {
-                                     var cHealth = mEntity.GetComponent<CHealth>();
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
+            cBody.Body.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Character);
+            cBody.OnCollision += (mCollisionInfo) =>
+            {
+                var entity = (Entity)mCollisionInfo.UserData;
 
-                                     if (mEntity.HasTag(Tags.DamagedByAny))
+                var cHealth = entity.GetComponent<CHealth>();
+
+                                     if (entity.HasTag(Tags.DamagedByAny))
                                      {
                                          cHealth -= 2;
                                          result.Destroy();
                                      }
-                                     else if (result.HasTag(Tags.BulletWhite) && mEntity.HasTag(Tags.DamagedByWhite))
+                                     else if (result.HasTag(Tags.BulletWhite) && entity.HasTag(Tags.DamagedByWhite))
                                      {
                                          cHealth -= 2;
                                          result.Destroy();
                                      }
-                                     else if (result.HasTag(Tags.BulletBlack) && mEntity.HasTag(Tags.DamagedByBlack))
+                                     else if (result.HasTag(Tags.BulletBlack) && entity.HasTag(Tags.DamagedByBlack))
                                      {
                                          cHealth -= 2;
                                          result.Destroy();
                                      }
 
-                                     if (mEntity.HasTag(Tags.DestroysBullets)) result.Destroy();
+                                     if (entity.HasTag(Tags.DestroysBullets)) result.Destroy();
                                  };
 
             cMovement.Angle = mDegrees;
@@ -344,24 +345,26 @@ namespace TestGenericShooter
             var cMovement = Movement(cBody);
             var cRender = Render(cBody, mTextureName);
 
-            cBody.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
-            cBody.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Character);
-            cBody.OnCollision += (mFrameTime, mEntity, mBody) =>
+            cBody.Body.AddGroupsToCheck(Groups.Obstacle, Groups.Character);
+            cBody.Body.AddGroupsToIgnoreResolve(Groups.Obstacle, Groups.Character);
+            cBody.OnCollision += (mCollisionInfo) =>
                                  {
-                                     var cHealth = mEntity.GetComponent<CHealth>();
+                                     var entity = (Entity)mCollisionInfo.UserData;
 
-                                     if (result.HasTag(Tags.SporeBlack) && mEntity.HasTag(Tags.DamagedByWhite))
+                                     var cHealth = entity.GetComponent<CHealth>();
+
+                                     if (result.HasTag(Tags.SporeBlack) && entity.HasTag(Tags.DamagedByWhite))
                                      {
                                          cHealth++;
                                          result.Destroy();
                                      }
-                                     else if (result.HasTag(Tags.SporeWhite) && mEntity.HasTag(Tags.DamagedByBlack))
+                                     else if (result.HasTag(Tags.SporeWhite) && entity.HasTag(Tags.DamagedByBlack))
                                      {
                                          cHealth++;
                                          result.Destroy();
                                      }
 
-                                     if (mEntity.HasTag(Tags.DestroysBullets)) result.Destroy();
+                                     if (entity.HasTag(Tags.DestroysBullets)) result.Destroy();
                                  };
 
             cMovement.Angle = mDegrees;

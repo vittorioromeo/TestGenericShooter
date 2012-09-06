@@ -21,7 +21,7 @@ namespace TestGenericShooter.Components
         {
             _game = mGame;
             _cRender = mCRender;
-            _shootDelay = Utils.RandomGenerator.GetNextInt(0, 100);
+            _shootDelay = Utils.Random.Next(0, 100);
         }
 
         public bool Purifying { get; set; }
@@ -47,9 +47,9 @@ namespace TestGenericShooter.Components
 
             var position = Entity.GetComponentUnSafe<CBody>().Position;
 
-            if (Utils.RandomGenerator.GetNextInt(0, 100) > 98)
+            if (Utils.Random.Next(0, 100) > 98)
             {
-                var angle = Utils.RandomGenerator.GetNextInt(0, 360);
+                var angle = Utils.Random.Next(0, 360);
                 var orbit = Utils.Math.Vectors.OrbitDegrees(new SSVector2F(position.X, position.Y), angle, 1600);
                 _game.Factory.Spore((int) orbit.X, (int) orbit.Y, angle, 100, !Purified);
             }

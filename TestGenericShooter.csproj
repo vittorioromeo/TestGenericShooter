@@ -54,15 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\CAI.cs" />
+    <Compile Include="Components\CBody.cs" />
     <Compile Include="Components\CChild.cs" />
     <Compile Include="Components\CHealth.cs" />
-    <Compile Include="Components\CLineOfSight.cs" />
     <Compile Include="Components\CMovement.cs" />
     <Compile Include="Components\CPurification.cs" />
     <Compile Include="Components\CPurifier.cs" />
     <Compile Include="Components\CRender.cs" />
     <Compile Include="Components\CControl.cs" />
-    <Compile Include="Components\CShadower.cs" />
     <Compile Include="Components\CShield.cs" />
     <Compile Include="Components\CTargeter.cs" />
     <Compile Include="Components\Polygon.cs" />

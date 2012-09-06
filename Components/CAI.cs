@@ -32,7 +32,7 @@ namespace TestGenericShooter.Components
             _cTargeter = mCTargeter;
             _cMovement = mCMovement;
             _cRender = mCRender;
-            _shootDelay = Utils.RandomGenerator.GetNextInt(0, 80);
+            _shootDelay = Utils.Random.Next(0, 80);
             _big = mBig;
 
             if (_big)
@@ -41,12 +41,14 @@ namespace TestGenericShooter.Components
                 _speedMax = 60;
             }
 
-            mCBody.OnCollision += (mFrameTime, mEntity, mBody) =>
+            mCBody.OnCollision += (mCollisionInfo) =>
                                   {
-                                      if (mEntity.HasTag(Tags.Wall))
+                                      var entity = (Entity)mCollisionInfo.UserData;
+
+                                      if (entity.HasTag(Tags.Wall))
                                       {
-                                           _angle += 180 + Utils.RandomGenerator.GetNextInt(-45, 45);
-                                           _speed = Utils.RandomGenerator.GetNextInt(0, 100);
+                                          _angle += 180 + Utils.Random.Next(-45, 45);
+                                          _speed = Utils.Random.Next(0, 100);
                                           _rotationSpeed = 0.002f;
                                       }
                                   };
@@ -57,12 +59,12 @@ namespace TestGenericShooter.Components
         public override void Update(float mFrameTime)
         {          
             if (_speed < _speedMax) _speed += 3*mFrameTime;
-            if (_rotationSpeed < 0.2f) _rotationSpeed += 0.002f*mFrameTime + (float) Utils.RandomGenerator.GetNextDouble()/1000f;
+            if (_rotationSpeed < 0.2f) _rotationSpeed += 0.002f * mFrameTime + (float)Utils.Random.NextDouble() / 1000f;
 
             if (_cTargeter.Target != null)
             {
                 var targetAngle = _cTargeter.GetDegreesTowardsTarget();
-                _shootDelay += mFrameTime + (float) Utils.RandomGenerator.GetNextDouble()/100f;
+                _shootDelay += mFrameTime + (float) Utils.Random.NextDouble()/100f;
                 if (_shootDelay > _shootDelayMax)
                 {
                     _timeline = new Timeline();
@@ -71,17 +73,17 @@ namespace TestGenericShooter.Components
                     {
                         _timeline.AddCommand(new Do(() => _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle, 300, !Friendly)));
                         _timeline.AddCommand(new Wait(3));
-                        _timeline.AddCommand(new Do(() => _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + Utils.RandomGenerator.GetNextInt(-10, 10), 300, !Friendly)));
+                        _timeline.AddCommand(new Do(() => _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + Utils.Random.Next(-10, 10), 300, !Friendly)));
                         _timeline.AddCommand(new Wait(3));
-                        _timeline.AddCommand(new Do(() => _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + Utils.RandomGenerator.GetNextInt(-10, 10), 300, !Friendly)));
+                        _timeline.AddCommand(new Do(() => _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + Utils.Random.Next(-10, 10), 300, !Friendly)));
                     }
                     else
                     {                   
                         _timeline.AddCommand(new Do(() =>
                                                     {
-                                                        _game.Factory.BigBullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + Utils.RandomGenerator.GetNextInt(-25, 25), 250, !Friendly);
-                                                        _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, Utils.RandomGenerator.GetNextInt(0, 360), 250, !Friendly);
-                                                        _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, Utils.RandomGenerator.GetNextInt(0, 360), 250, !Friendly);
+                                                        _game.Factory.BigBullet(_cBody.Position.X, _cBody.Position.Y, targetAngle + Utils.Random.Next(-25, 25), 250, !Friendly);
+                                                        _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, Utils.Random.Next(0, 360), 250, !Friendly);
+                                                        _game.Factory.Bullet(_cBody.Position.X, _cBody.Position.Y, Utils.Random.Next(0, 360), 250, !Friendly);
                                                         _speed = 0;
                                                     }));
                         _timeline.AddCommand(new Wait(2));

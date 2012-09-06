@@ -12,13 +12,14 @@ namespace TestGenericShooter.Components
         {
             _body = mCBody;
 
-            _body.OnCollision += (mFrameTime, mEntity, mBody) =>
-                                 {
-                                     if (!mEntity.HasTag(Tags.Purifiable)) return;
+            _body.OnCollision += (mCollisionInfo) =>
+                                    {
+                                        var entity =(Entity) mCollisionInfo.UserData;
+                                        if (!entity.HasTag(Tags.Purifiable)) return;
 
-                                     var cPurification = mEntity.GetComponentUnSafe<CPurification>();
-                                     cPurification.Purifying = !mEnemy;
-                                 };
+                                        var cPurification = entity.GetComponentUnSafe<CPurification>();
+                                        cPurification.Purifying = !mEnemy;
+                                     };
         }
     }
 }

@@ -129,18 +129,18 @@ namespace TestGenericShooter
 
                     if (map.IsValue(iX, iY, 9))
                     {
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
-                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.RandomGenerator.GetNextInt(0, 360), Utils.RandomGenerator.GetNextInt(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
+                        Factory.Bullet(8.ToUnits() + 16.ToUnits()*iX, 8.ToUnits() + 16.ToUnits()*iY, Utils.Random.Next(0, 360), Utils.Random.Next(0, 25), false);
                     }
 
                     if (iX <= 0 || iY <= 0 || iX >= sizeX - 1 || iY >= sizeY - 1) continue;

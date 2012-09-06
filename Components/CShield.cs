@@ -14,15 +14,16 @@ namespace TestGenericShooter.Components
             _game = mGame;
             _body = mCBody;
 
-            _body.OnCollision += (mFrameTime, mEntity, mBody) =>
-                                 {
-                                     if (!mEntity.HasTag(Tags.BulletBlack) || mEntity.IsDead) return;
+            _body.OnCollision += (mCollisionInfo) =>
+                                     {
+                                         var entity = (Entity) mCollisionInfo.UserData;
+                                     if (!entity.HasTag(Tags.BulletBlack) || entity.IsDead) return;
 
-                                     var cMovement = mEntity.GetComponentUnSafe<CMovement>();
+                                     var cMovement = entity.GetComponentUnSafe<CMovement>();
                                      var speed = cMovement.Speed;
                                      var angle = cMovement.Angle;
 
-                                     mEntity.Destroy();
+                                     entity.Destroy();
 
                                      _game.Factory.Bullet(_body.Position.X, _body.Position.Y, 180 + angle, (int)speed, false);
                                  };

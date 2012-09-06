@@ -51,7 +51,7 @@ namespace TestGenericShooter.Components
                 return;
             }
 
-            var angle = Utils.Math.Vectors.ToAngleDegrees(new SSVector2F(_game.NextX, _game.NextY));
+            var angle = new SSVector2F(_game.NextX, _game.NextY).ToAngleDegrees();
             _cMovement.Angle = angle;
             _cMovement.Speed = speed;
         }
