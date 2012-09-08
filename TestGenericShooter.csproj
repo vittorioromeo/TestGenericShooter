@@ -87,9 +87,9 @@
       <Project>{cd21151c-e8c0-4c0e-a92b-ac998e9f7c1a}</Project>
       <Name>VeeCollision</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VeeEntitySystem2012\VeeEntitySystem2012.csproj">
+    <ProjectReference Include="..\VeeEntitySystem2012\VeeEntity.csproj">
       <Project>{07789116-c18e-4a15-b8f2-bc9a83089b0d}</Project>
-      <Name>VeeEntitySystem2012</Name>
+      <Name>VeeEntity</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,4 @@
-using VeeEntitySystem2012;
+using VeeEntity;
 
 namespace TestGenericShooter.Components
 {

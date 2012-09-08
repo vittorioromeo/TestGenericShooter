@@ -1,6 +1,6 @@
 using TestGenericShooter.Resources;
 using VeeCollision;
-using VeeEntitySystem2012;
+using VeeEntity;
 
 namespace TestGenericShooter.Components
 {

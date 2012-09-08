@@ -8,7 +8,7 @@ using SFMLStart.Utilities;
 using TestGenericShooter.Components;
 using TestGenericShooter.Resources;
 using VeeCollision;
-using VeeEntitySystem2012;
+using VeeEntity;
 
 namespace TestGenericShooter
 {
@@ -64,7 +64,7 @@ namespace TestGenericShooter
             const int sizeX = 20;
             const int sizeY = 15;
 
-            var map = new[]
+            var mapxd = new[]
                           {
                               "11111111111111111111",
                               "10000000000000000001",
@@ -83,7 +83,7 @@ namespace TestGenericShooter
                               "11111111111111111111"
                           };
 
-            var mapxd = new[]
+            var map = new[]
                           {
                               "11111111111111111111",
                               "14400000000000000001",

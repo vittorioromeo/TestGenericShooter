@@ -2,7 +2,7 @@
 using System;
 using SFMLStart.Vectors;
 using VeeCollision;
-using VeeEntitySystem2012;
+using VeeEntity;
 
 #endregion
 
